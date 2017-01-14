@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/pitt.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            Finding your next company with:
+
+            <h1>Elasticsearch</h1>
+
+            <span class="smaller">Matt Withum / @mdw233psu</span>
+        </section>
+
+        <section>
+            <h2>What is Elasticsearch?</h2>
+
+            <p>Elasticsearch is a <span class="fragment highlight-current-red">real-time</span> <span
+                    class="fragment highlight-current-red">distributed</span> <span
+                    class="fragment highlight-current-red">search and analytics engine</span></p>
+        </section>
+
+        <section>
+            <h2>What is Used For?</h2>
+
+            <ul>
+                <li>Structured search</li>
+                <li>Analytics</li>
+                <li class="highlight">Full-text search</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Terms</h2>
+            <ul>
+                <li>Index</li>
+                <li>Document</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Example Document</h2>
+            <pre><code>
+        {
+            "type":"Bar",
+            "companyName":"Peter's Pub",
+            "address":{
+                "street":"116 Oakland Ave",
+                "city":"Pittsburgh",
+                "state":"PA",
+                "zip":15213
+            }
+        }
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>Flow</h2>
+            <ol>
+                <li class="">Create an index</li>
+                <li class="">Add a document</li>
+                <li class="">Search for it</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Data <span class="fragment">... Reviews</span></h2>
+            <blockquote class="fragment">"Filthy. You couldn't pay me to go here. Let's not mention they treat their
+                customers like garbage." <span class="fragment highlight">- The O</span></span></blockquote>
+            <blockquote class="fragment">"bangin." <span class="fragment highlight">- Bouquet Gardens</span></span>
+            </blockquote>
+        </section>
+
+        <section>
+            <h2>Add Some Data Time</h2>
+        </section>
+
+        <section>
+            <h2>Elasticsearch Magic</h2>
+        </section>
+
+        <section>
+            <h2>Perform Analysis</h2>
+            <blockquote>they sell cigs and gas. Its a gas station - Love or wat? <span
+                    class="highlight">- Marathon</span></blockquote>
+            <p class="fragment">they, sell, cigs, and, gas, Its, a, gas, station, Love, or, wat</p>
+            <p class="fragment">they, sell, cigs, and, gas, <span class="red">i</span>ts, a, gas, station, <span
+                    class="red">l</span>ove, or, wat</p>
+        </section>
+
+        <section>
+            <h2>Inverted Index</h2>
+            <p>they, sell, cigs, and, gas, its, a, gas, station, love, or, wat</p>
+            <p class="fragment" data-fragment-index="1">fine, gas, station</p>
+
+            <div class="fragment" data-fragment-index="2">
+                <div class="left">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Doc 1</th>
+                            <th>Doc 2</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="fragment highlight-current-red" data-fragment-index="4">
+                            <th scope="row">they</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr class="fragment highlight-current-red" data-fragment-index="3">
+                            <th scope="row"><span>sell</span></th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">cigs</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">and</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">gas</th>
+                            <td>x</td>
+                            <td>x</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">its</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="right">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Doc 1</th>
+                            <th>Doc 2</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">a</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">station</th>
+                            <td>x</td>
+                            <td>x</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">love</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">or</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">wat</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr class="fragment highlight-current-red" data-fragment-index="4">
+                            <th scope="row">fine</th>
+                            <td></td>
+                            <td>x</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <section>
+            <h2>Search Demo</h2>
+        </section>
+
+        <section>
+            <h2>Advanced Topics</h2>
+            <ul>
+                <li>Analysis</li>
+                <li>Mapping</li>
+                <li>Synonyms</li>
+                <li>Stemming</li>
+                <li>Relationships</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Who's Using It?</h2>
+            <blockquote class="fragment"><span class="highlight">Wikipedia</span> uses Elasticsearch to provide full-text search with highlighted search snippets, and search-as-you-type and did-you-mean suggestions.</blockquote>
+            <blockquote class="fragment"><span class="highlight">Stack Overflow</span> combines full-text search with geolocation queries and uses "more-like-this" to find related questions and answers.</blockquote>
+            <blockquote class="fragment"><span class="highlight">GitHub</span> uses Elasticsearch to query <strong>130 billion</strong> lines of code.</blockquote>
+        </section>
+
+        <section>
+            <img src="img/shameless-plug.jpg" />
+        </section>
+
+        <section>
+            <h2>Who's Using It?</h2>
+            <div class="left">
+                <img src="img/iclogo.jpg" />
+            </div>
+            <div class="right">
+                <ul>
+                    <li>Structured Search</li>
+                    <li>Full Text Search</li>
+                    <li>Mapping / Analysis</li>
+                    <li>Highlighting</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>IC Demo</h2>
+        </section>
+
+        <section>
+            <h2>IC Elasticsearch Query</h2>
+        </section>
+
+        <section>
+            <h1>Bye For Now</h1>
+            <p>(Talk to me about summer internships)</p>
+        </section>
+    </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {src: 'plugin/markdown/marked.js'},
+            {src: 'plugin/markdown/markdown.js'},
+            {src: 'plugin/notes/notes.js', async: true},
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            }
+        ]
+    });
+
+    Reveal.configure({
+        //autoSlide: 1500
+    });
+</script>
+
+<script>
+    Reveal.addEventListener('ready', function (event) {
+        // event.currentSlide, event.indexh, event.indexv
+        //alert('hey now');
+    });
+</script>
+</body>
+</html>
