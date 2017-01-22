@@ -130,3 +130,14 @@ body {
 .reveal table th, .reveal table td {
   font-size: 30px;
 }
+
+.index, .type, .doc {
+  border: 3px solid white !important;
+  padding: 40px !important;
+  text-align: left;
+  float: left !important;
+}
+
+.type {
+  border-color: #B3A369 !important;
+}

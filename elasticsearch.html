@@ -34,22 +34,42 @@
         </section>
 
         <section>
-            <h2>What is Elasticsearch?</h2>
+            <h2>Goals?</h2>
 
-            <p>Elasticsearch is a <span class="fragment highlight-current-red">real-time</span> <span
-                    class="fragment highlight-current-red">distributed</span> <span
-                    class="fragment highlight-current-red">search and analytics engine</span></p>
+            <ul>
+                <li>Introduce you to Elasticsearch for the first time</li>
+                <li>Talk about and demo basic data operations</li>
+                <li>Execute some searches</li>
+                <li>Breeze over some advanced features</li>
+            </ul>
 
             <aside class="notes" data-markdown>
                 <script type="text/template">
-                    * real time: the data is stored, indexed, and available in real time ... large data sets can be queried with incredible speed
-                    * distributed: elasticsearch is dead simple to cluster; you can install many nodes, give them all the same cluster name, and they will discover eachother
-                        * this is useful for large datasets - searches can be spread amongst the nodes to share in the processing of data
-                        * it's also useful for keeping the engine highly available
-                    * search and analytics engine: it's built for searching and analytics
+                    * introduce you all to ES for the first time, making you aware of what it is
+                    * talk a bit about how data is stored and actually add data to show the operations
+                    * run a search or 2 - cause that's where the coolness is
+                    * talk about a couple of advanced features at a really high level
                 </script>
             </aside>
         </section>
+
+        <section>
+        <h2>What is Elasticsearch?</h2>
+
+        <p>Elasticsearch is a <span class="fragment highlight-current-red">real-time</span> <span
+                class="fragment highlight-current-red">distributed</span> <span
+                class="fragment highlight-current-red">search and analytics engine</span></p>
+
+        <aside class="notes" data-markdown>
+            <script type="text/template">
+                * real time: the data is stored, indexed, and available in real time ... large data sets can be queried with incredible speed
+                * distributed: elasticsearch is dead simple to cluster; you can install many nodes, give them all the same cluster name, and they will discover eachother
+                * this is useful for large datasets - searches can be spread amongst the nodes to share in the processing of data
+                * it's also useful for keeping the engine highly available
+                * search and analytics engine: it's built for searching and analytics
+            </script>
+        </aside>
+    </section>
 
         <section>
             <h2>What is Used For?</h2>
@@ -77,6 +97,7 @@
             <h2>Terms</h2>
             <ul>
                 <li>Index</li>
+                <li>Type</li>
                 <li>Document</li>
             </ul>
 
@@ -86,6 +107,9 @@
                         * a place to store data
                         * a container
                         * a named segment where documents live
+                    * type:
+                        * the name of the thing you're storing
+                        * kind of like a table in a relational database
                     * document:
                         * a single object
                         * has a type
@@ -93,6 +117,26 @@
                         * is stored as JSON
                 </script>
             </aside>
+        </section>
+
+
+
+        <section>
+            <div class="index">
+                <p>index</p>
+                <div class="fragment type">
+                    <p class="highlight">type</p>
+                    <div class="fragment doc">
+                        <p>document</p>
+                    </div>
+                    <div class="fragment doc hi">
+                        <p>document</p>
+                    </div>
+                    <div class="fragment doc">
+                        <p>document</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section>
