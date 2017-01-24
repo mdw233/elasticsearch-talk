@@ -1,7 +1,7 @@
 #Elasticsearch Talk
 These are slides (using [reveal.js](https://github.com/hakimel/reveal.js/)) to be used for an Elasticsearch intro talk.
 # View Presentation
-Open `elasticsearch.html` with any browser and use the left/right arrows to navigate.
+Open `index.html` with any browser and use the left/right arrows to navigate.
 # When / Who?
 The talk was given on 1/23/2017 to the University of Pittsburgh Computer Science club.
 # Why?
