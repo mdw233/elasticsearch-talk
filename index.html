@@ -1,0 +1,495 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>reveal.js</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+    <link rel="stylesheet" href="css/pitt.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <p class="fragment fade-out" data-fragment-index="1">Finding your next company with:</p>
+
+            <h1>Elasticsearch</h1>
+
+            <span class="smaller fragment" data-fragment-index="1">(an intro)</span>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * check your checklist
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Goals?</h2>
+
+            <ul>
+                <li>Introduce you to Elasticsearch for the first time</li>
+                <li>Talk about and demo basic data operations</li>
+                <li>Execute some searches</li>
+                <li>Breeze over some advanced features</li>
+            </ul>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * introduce you all to ES for the first time, making you aware of what it is
+                    * talk a bit about how data is stored and actually add data to show the operations
+                    * run a search or 2 - cause that's where the coolness is
+                    * talk about a couple of advanced features at a really high level
+                </script>
+            </aside>
+        </section>
+
+        <section>
+        <h2>What is Elasticsearch?</h2>
+
+        <p>Elasticsearch is a <span class="fragment highlight-current-red">real-time</span> <span
+                class="fragment highlight-current-red">distributed</span> <span
+                class="fragment highlight-current-red">search and analytics engine</span></p>
+
+        <p>Exposed via easy to use RestApi</p>
+
+        <aside class="notes" data-markdown>
+            <script type="text/template">
+                * real time: the data is stored, indexed, and available in real time ... large data sets can be queried with incredible speed
+                * distributed: elasticsearch is dead simple to cluster; you can install many nodes, give them all the same cluster name, and they will discover eachother
+                * this is useful for large datasets - searches can be spread amongst the nodes to share in the processing of data
+                * it's also useful for keeping the engine highly available
+                * search and analytics engine: it's built for searching and analytics
+            </script>
+        </aside>
+    </section>
+
+        <section>
+            <h2>What is Used For?</h2>
+
+            <ul>
+                <li>Structured search</li>
+                <li>Analytics</li>
+                <li class="highlight">Full-text search</li>
+            </ul>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * structured search: search for exact values; search for range values (greater than / less than)
+                    * analytics: perform broad calculations across swaths of data
+                    * full text search
+                        * we're going to focus on this for this talk
+                    * process of searching through huge walls of text to pull out actionable data
+                       * talking about many petabytes of data and get seemingly instant results
+
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Terms</h2>
+            <ul>
+                <li>Index</li>
+                <li>Type</li>
+                <li>Document</li>
+            </ul>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * index:
+                        * a place to store data
+                        * a container
+                        * a named segment where documents live
+                    * type:
+                        * the name of the thing you're storing
+                        * kind of like a table in a relational database
+                    * document:
+                        * a single object
+                        * has a type
+                        * lives in an index
+                        * is stored as JSON
+                </script>
+            </aside>
+        </section>
+
+
+
+        <section>
+            <div class="index">
+                <p>index</p>
+                <div class="fragment type">
+                    <p class="highlight">type</p>
+                    <div class="fragment doc">
+                        <p>document</p>
+                    </div>
+                    <div class="fragment doc hi">
+                        <p>document</p>
+                    </div>
+                    <div class="fragment doc">
+                        <p>document</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Example Document</h2>
+            <pre><code>
+        {
+            "_type":"Bar",
+            "companyName":"Peter's Pub",
+            "address":{
+                "street":"116 Oakland Ave",
+                "city":"Pittsburgh",
+                "state":"PA",
+                "zip":15213
+            }
+        }
+            </code></pre>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * this is an example document
+                    * You can see that it is JSON
+                    * it has a type, which is important
+                        * types are a way to say that these documents are the same thing
+                        * though not all docs of a single type have to have all the same fields
+                    * it can have subtypes, or nested fields
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Flow</h2>
+            <p>Use the Elasticsearch Rest Api to:</p>
+            <ol>
+                <li class="">Create an index</li>
+                <li class="">Add a document</li>
+                <li class="">Search for it</li>
+            </ol>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * elasticsearch starts without an index so we'll create one
+                        * at that time, we can - if we want - create a mapping, or tell the index "hey when you see a field named xyz, treat the data like a number"
+                    * add the document to an index
+                        * document is added to the index
+                        * it will create mappings in on the fly - if you didn't tell it what to do with a field when you created the index it'll just guess
+                        * looks like a number, call it a number ... looks like a string, call it a full text analyzed string
+                        * We will come back to this analysis a bit later
+                    * search for these documents
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Data <span class="fragment">... Reviews</span></h2>
+            <blockquote class="fragment">"Filthy. You couldn't pay me to go here. Let's not mention they treat their
+                customers like garbage." <span class="fragment highlight">- The O</span></span></blockquote>
+            <blockquote class="fragment">"bangin." <span class="fragment highlight">- Bouquet Gardens</span></span>
+            </blockquote>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * so if we're gonna do this we need some text heavy data
+                    * local business reviews have text
+                    * specifically local businesses right here in oakland
+                    * here's the first - can anyone guess where this might be from
+                    * this next one is from a living quarters
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Add Some Data Time</h2>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * let's go add the data
+                    * switch to postman and show it
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Elasticsearch Magic</h2>
+
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * OK .... so what happened as we added the data?
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Perform Analysis</h2>
+            <blockquote class="fragment">they sell cigs and gas. Its a gas station - Love or wat? <span
+                    class="highlight">- Marathon</span></blockquote>
+            <p class="fragment">they, sell, cigs, and, gas, Its, a, gas, station, Love, or, wat</p>
+            <p class="fragment">they, sell, cigs, and, gas, <span class="red">i</span>ts, a, gas, station, <span
+                    class="red">l</span>ove, or, wat</p>
+
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * here is another review from the marathon down the road
+                    * that string is run through the analyzer
+                        * it's split on all non-letter fields
+                        * then it is all lowercased
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Inverted Index</h2>
+            <p>they, sell, cigs, and, gas, its, a, gas, station, love, or, wat</p>
+            <p data-fragment-index="1">fine, gas, station</p>
+
+            <div class="fragment" data-fragment-index="2">
+                <div class="left">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Doc 1</th>
+                            <th>Doc 2</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="fragment highlight-current-red" data-fragment-index="4">
+                            <th scope="row">they</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr class="fragment highlight-current-red" data-fragment-index="3">
+                            <th scope="row"><span>sell</span></th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">cigs</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">and</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">gas</th>
+                            <td>x</td>
+                            <td>x</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">its</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="right">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Term</th>
+                            <th>Doc 1</th>
+                            <th>Doc 2</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">a</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">station</th>
+                            <td>x</td>
+                            <td>x</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">love</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">or</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">wat</th>
+                            <td>x</td>
+                            <td></td>
+                        </tr>
+                        <tr class="fragment highlight-current-red" data-fragment-index="4">
+                            <th scope="row">fine</th>
+                            <td></td>
+                            <td>x</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * it takes that analyzed string and stores it as an inverted index
+                    * this is the structure in which the data is stored and is what makes ES so fast
+                    * for illustration purposes let's say there is another review that looks like this
+                    * well then these are both stored in the same inverted index which looks like this
+                    * you can see that each word is stored separately -- along with the document(s) it is stored in
+                    * say I search for the word SELL
+                        * it will find that it is in one document and return that document
+                        * it didn't have to search through all of the text in the review, just the inverted index
+                    * or I search for THEY FINE
+                        * it will find that one word is in doc 1 / the other in doc 2
+                        * so it will return 2 docs
+                    * one thing I don't show here is that it actually stores the position in the string
+                        * this is necessary for searching for whole phrases like you might when searching w/ quotes
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Advanced Topics</h2>
+            <ul>
+                <li>Analysis</li>
+                <li>Mapping</li>
+                <li>Synonyms</li>
+                <li>Stemming</li>
+                <li>Relationships</li>
+            </ul>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * analysis: process of taking text and break it down
+                        * what I showed you - splitting on punctuation and lowercasing is just one method - default - but just one
+                    * mapping: telling your index what to expect from the data instead of just guessing
+                    * synonyms: you can train ES and tell it what words are actually other words
+                        * developer: coder, engineer, tech
+                    * stemming: part of analysis actually - breaks words down to their stem
+                        * foxes becomes fox
+                    * relationships:
+                        * nested: a type within another type - all within one document
+                        * parent/child: one document can be a child to another - but they're two separate docs that can be updated independently
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Who's Using It?</h2>
+            <blockquote class="fragment"><span class="highlight">Wikipedia</span> uses Elasticsearch to provide full-text search with highlighted search snippets, and search-as-you-type and did-you-mean suggestions.</blockquote>
+            <blockquote class="fragment"><span class="highlight">Stack Overflow</span> combines full-text search with geolocation queries and uses "more-like-this" to find related questions and answers.</blockquote>
+            <blockquote class="fragment"><span class="highlight">GitHub</span> uses Elasticsearch to query <strong>130 billion</strong> lines of code.</blockquote>
+        </section>
+
+        <section>
+            <img src="img/shameless-plug.jpg" />
+        </section>
+
+        <section>
+            <h2>Who's Using It?</h2>
+            <div class="left">
+                <img src="img/iclogo.jpg" />
+            </div>
+            <div class="right">
+                <ul>
+                    <li>Structured Search</li>
+                    <li>Full Text Search</li>
+                    <li>Mapping / Analysis</li>
+                    <li>Highlighting</li>
+                </ul>
+            </div>
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * remember the name of the talk - finding your next company
+                    * what if you could index thousands of job listings - which are very text heavy
+                    * the full text search those using skills, interests, or whatever you want to find the ones you care about
+                    * also filter those postings on other attributes about that company
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>IC Demo</h2>
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * it'd look like this
+                    * GO RUN a FEW SEARCHES
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h2>IC Elasticsearch Query</h2>
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * show an example of the search
+                        * talk about the query
+                    * run it in postman, change it a bit
+                </script>
+            </aside>
+        </section>
+
+        <section>
+            <h1>Bye For Now</h1>
+            <p>(Talk to me about summer internships)</p>
+            <p>@mdw233psu / Matt Withum</p>
+        </section>
+    </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {src: 'plugin/markdown/marked.js'},
+            {src: 'plugin/markdown/markdown.js'},
+            {src: 'plugin/notes/notes.js', async: true},
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            }
+        ]
+    });
+
+    Reveal.configure({
+        //autoSlide: 1500
+    });
+</script>
+
+<script>
+    Reveal.addEventListener('ready', function (event) {
+        // event.currentSlide, event.indexh, event.indexv
+        //alert('hey now');
+    });
+</script>
+</body>
+</html>
