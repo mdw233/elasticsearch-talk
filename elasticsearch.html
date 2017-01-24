@@ -26,11 +26,17 @@
 <div class="reveal">
     <div class="slides">
         <section>
-            Finding your next company with:
+            <p class="fragment fade-out" data-fragment-index="1">Finding your next company with:</p>
 
             <h1>Elasticsearch</h1>
 
-            <span class="smaller fragment">(an intro)</span>
+            <span class="smaller fragment" data-fragment-index="1">(an intro)</span>
+
+            <aside class="notes" data-markdown>
+                <script type="text/template">
+                    * check your checklist
+                </script>
+            </aside>
         </section>
 
         <section>
@@ -59,6 +65,8 @@
         <p>Elasticsearch is a <span class="fragment highlight-current-red">real-time</span> <span
                 class="fragment highlight-current-red">distributed</span> <span
                 class="fragment highlight-current-red">search and analytics engine</span></p>
+
+        <p>Exposed via easy to use RestApi</p>
 
         <aside class="notes" data-markdown>
             <script type="text/template">
@@ -168,6 +176,7 @@
 
         <section>
             <h2>Flow</h2>
+            <p>Use the Elasticsearch Rest Api to:</p>
             <ol>
                 <li class="">Create an index</li>
                 <li class="">Add a document</li>
@@ -250,7 +259,7 @@
         <section>
             <h2>Inverted Index</h2>
             <p>they, sell, cigs, and, gas, its, a, gas, station, love, or, wat</p>
-            <p class="fragment" data-fragment-index="1">fine, gas, station</p>
+            <p data-fragment-index="1">fine, gas, station</p>
 
             <div class="fragment" data-fragment-index="2">
                 <div class="left">
@@ -357,18 +366,6 @@
                         * so it will return 2 docs
                     * one thing I don't show here is that it actually stores the position in the string
                         * this is necessary for searching for whole phrases like you might when searching w/ quotes
-                </script>
-            </aside>
-        </section>
-
-        <section>
-            <h2>Search Demo</h2>
-
-            <aside class="notes" data-markdown>
-                <script type="text/template">
-                    * go do a search on the review data set
-                    * do a basic search
-                    * do an advanced search w/ rating numbers
                 </script>
             </aside>
         </section>
