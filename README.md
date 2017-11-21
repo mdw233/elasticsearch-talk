@@ -1,4 +1,4 @@
-#Elasticsearch Talk
+# Elasticsearch Talk
 These are slides (using [reveal.js](https://github.com/hakimel/reveal.js/)) to be used for an Elasticsearch intro talk.
 # View Presentation
 Open `index.html` with any browser and use the left/right arrows to navigate.
